@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_user_logged_in, only: [:index, :show]
+  before_action :require_user_logged_in, only: [:index, :show, :followings, :followers]
   
   def index
     @users = User.order(id: :desc).page(params[:page]).per(20)
@@ -22,9 +22,23 @@ class UsersController < ApplicationController
       flash[:success] = 'ユーザを登録しました'
       redirect_to @user
     else
-      flash[:danger] = 'ユーザの登録に失敗しました'
+      flash.now[:danger] = 'ユーザの登録に失敗しました'
       render :new
     end
+  end
+  
+  def followings
+    @user = User.find(params[:id])
+    # @userがフォローしているユーザー一覧に追加して表示
+    @followings = @user.followings.page(params[:page])
+    counts(@user)
+  end
+  
+  def followers
+    @user = User.find(params[:id])
+    # @userをフォローしているユーザー一覧に追加して表示
+    @followers = @user.followers.page(params[:page])
+    counts(@user)
   end
   
   
