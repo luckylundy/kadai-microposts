@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_user_logged_in, only: [:index, :show, :followings, :followers]
+  before_action :require_user_logged_in, only: [:index, :show, :followings, :followers, :likes]
   
   def index
     @users = User.order(id: :desc).page(params[:page]).per(20)
@@ -29,17 +29,27 @@ class UsersController < ApplicationController
   
   def followings
     @user = User.find(params[:id])
-    # @userがフォローしているユーザー一覧に追加して表示
+    # @userがフォローしているユーザー一覧を表示
+    # 追加するのはrelationships.createの役割
     @followings = @user.followings.page(params[:page])
     counts(@user)
   end
   
   def followers
     @user = User.find(params[:id])
-    # @userをフォローしているユーザー一覧に追加して表示
+    # @userをフォローしているユーザー一覧を表示
+    # 解除するのはrelationships.destroyの役割
     @followers = @user.followers.page(params[:page])
     counts(@user)
   end
+  
+  def likes
+    @user = User.find(params[:id])
+    @likes = @user.likes.page(params[:page])
+    counts(@user)
+  end
+  
+  
   
   
   

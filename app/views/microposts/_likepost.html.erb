@@ -1,0 +1,24 @@
+<% if likes.any? %>
+  <ul class="list-unstyled">
+    <% likes.each do |like| %>
+      <li class="media mb-3">
+        <img class="mr-2 rounded" src="<%= gravatar_url(like.user, { size: 50 }) %>" alt="">
+        <div class="media-body">
+          <div>
+            <%= link_to like.user.name, user_path(like.user) %><span class="text-muted"><%= like.created_at %></span>
+          </div>
+          <div>
+            <p><%= like.content %></p>
+          </div>
+          <div class="row">
+            <% if current_user == like.user %>
+              <%= link_to 'Delete', like, method: :delete, data: { confirm: 'You sure?' }, class: 'btn btn-danger btn-sm' %>
+            <% end %>
+            <%= render 'favorites/like_button', micropost: like %>
+          </div>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+  <%= paginate likes %>
+<% end %>
